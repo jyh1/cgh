@@ -4,7 +4,7 @@ import * as T from './types'
 import { Vec } from '../math/vector';
 import { Matrix } from '../math/matrix';
 
-const SampleRate = 100
+const SampleRate = 3
 const dt = 1 / (SampleRate + 1)
 
 export class Bezier {
@@ -43,17 +43,11 @@ export class Bezier {
             X.push([q1t.x, q2t.x])
             X.push([q1t.y, q2t.y])
         }
-        // console.log("i", i0, i3)
-        // console.log("X", X)
-        // console.log("Y", points)
-        // least square
         const XMat = new Matrix(X)
         const XMatT = XMat.transpose()
         const YMat = new Matrix(points)
         const [[b1], [b2]] = XMatT.dot(XMat).inverse().dot(XMatT).dot(YMat).mat
 
-        console.log([b1, b2])
-        console.log([i0, i0.add(q1.scale(b1)), i3.add(q2.scale(b2)), i3])
         return (new Bezier([i0, i0.add(q1.scale(b1)), i3.add(q2.scale(b2)), i3]))
     }
 
@@ -93,27 +87,11 @@ export class SegmentObj {
     }
 
     toSVGString(thickScale: number){
-        const [p0, p1, p2, p3] = this.curve.points
         const {initWidth, closingWidth} = this.segment
-        // console.log(this.curve.points, initWidth, closingWidth)
-        const mid = this.curve.getPoint(0.5)
-        const q1 = p1.sub(p0)
-        const q2 = p3.sub(p2)
 
-        const n1 = q1.normalized().rotate().scale(initWidth * thickScale / 2)
-        const n3 = q2.normalized().rotate().scale(closingWidth * thickScale / 2)
-        const nm = this.curve.getDeriv(0.5).rotate().normalized().scale((initWidth+closingWidth)/4*thickScale)
         // outer strand
-        const o0 = p0.add(n1)
-        const o3 = p3.add(n3)
-        const om = mid.add(nm)
-        console.log(initWidth, closingWidth)
         const outerStrand = this.curve.solve(t => thickScale*(initWidth * (1- t) + closingWidth * t))
-
         // inner strand
-        const i0 = p0.sub(n1)
-        const i3 = p3.sub(n3)
-        const im = mid.sub(nm)
         const innerStrand = this.curve.solve(t => thickScale*(-initWidth * (1- t) - closingWidth * t))
 
         const [o0p, o1p, o2p, o3p] = outerStrand.points.map(p => p.toString())
@@ -121,22 +99,23 @@ export class SegmentObj {
         // segment counter
         const path =
             `M${o0p} C${o1p} ${o2p} ${o3p} L${i3p} C${i2p} ${i1p} ${i0p}`
-            // `M${o0p} C${o1p} ${o2p} ${o3p}`
         return path
     }
     toSVGEle(k: number, thickness: number){
-        const [p0, p1, p2, p3] = this.curve.points.map(p => p.toString())
+        // const [p0, p1, p2, p3] = this.curve.points.map(p => p.toString())
         return (
+            <React.Fragment>
             <path key={k} d={this.toSVGString(thickness)}
                 className="segment-base"
             />
+            {/* <path key={k + 10} d={`M${p0} C${p1} ${p2} ${p3}`} style={{fill: "none", strokeWidth: "0.005px", stroke: "red"}}/> */}
+            </React.Fragment>
         )
     }
 }
 
 export class CharacterObj {
     segments: SegmentObj[]
-
     constructor(character: T.Character){
         this.segments = character.segments.map(s => new SegmentObj(s))
     }
@@ -145,7 +124,7 @@ export class CharacterObj {
         return(
             <React.Fragment>
                 {this.segments.map((s, i) => s.toSVGEle(i, thickness))}
-                {/* {this.segments[0].toSVGEle(0, thickness)} */}
+                {/* {this.segments[1].toSVGEle(0, thickness)} */}
             </React.Fragment>
         )
     }
