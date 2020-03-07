@@ -8,9 +8,9 @@
 }
 
 .segment-base {
-  stroke: red;
-  stroke-width: 0.02px;
-  fill:none;
+  /* stroke: red; */
+  stroke-width: 0.005px;
+  /* fill:none; */
 }
 
 @media (prefers-reduced-motion: no-preference) {

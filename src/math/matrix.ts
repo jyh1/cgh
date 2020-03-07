@@ -11,8 +11,8 @@ export class Matrix {
         this.col = mat[0].length
     }
     dot(mat: Matrix){
-        if (this.col != mat.row){
-            throw "Matrix shape not match!"
+        if (this.col !== mat.row){
+            throw new Error("Matrix shape not match!")
         }
         let newmat: Mat = Array(this.row)
         for(let i = 0; i < this.row; i++){
@@ -26,12 +26,23 @@ export class Matrix {
         return new Matrix(newmat)
     }
 
+    transpose(){
+        const newmat = Array(this.col)
+        for (let i = 0; i < this.col; i++){
+            newmat[i] = Array(this.row)
+            for (let j = 0; j < this.row; j ++){
+                newmat[i][j] = this.mat[j][i]
+            }
+        }
+        return (new Matrix(newmat))
+    }
+
 
     inverse(){
-        if (this.row != 2 || this.col != 2){
-            throw "Inverse beyond 2x2 not implemented"
+        if ((this.row === 2) && (this.col === 2)){
+            const [[a, b], [c, d]] = this.mat
+            return new Matrix ([[d/(-(b*c) + a*d), -(b/(-(b*c) + a*d))], [-(c/(-(b*c) + a*d)), a/(-(b*c) + a*d)]])
         }
-        const [[a, b], [c, d]] = this.mat
-        return new Matrix ([[d/(-(b*c) + a*d), -(b/(-(b*c) + a*d))], [-(c/(-(b*c) + a*d)), a/(-(b*c) + a*d)]])
+        throw new Error("Inverse for matrix over 2x2 not implemented")
     }
 }
