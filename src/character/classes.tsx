@@ -7,6 +7,8 @@ import { Matrix } from '../math/matrix';
 const SampleRate = 3
 const dt = 1 / (SampleRate + 1)
 
+export type RenderConfig = {origin: Vec, unitWidth: number}
+
 export class Bezier {
     points: T.Quadruple<Vec>
 
@@ -21,6 +23,9 @@ export class Bezier {
         return this.points[i].y
     }
 
+    translate(dv: Vec){
+        this.points = this.points.map(p => p.add(dv)) as T.Quadruple<Vec>
+    }
 
     // fit for Bezier curve with the same slope at two ends, and distance from the original curve determined by thickness
     solve(thickness: (t: number) => number){
@@ -96,16 +101,17 @@ export class SegmentObj {
 
         const [o0p, o1p, o2p, o3p] = outerStrand.points.map(p => p.toString())
         const [i0p, i1p, i2p, i3p] = innerStrand.points.map(p => p.toString())
-        // segment counter
+        // segment contour
         const path =
             `M${o0p} C${o1p} ${o2p} ${o3p} L${i3p} C${i2p} ${i1p} ${i0p}`
         return path
     }
-    toSVGEle(k: number, thickness: number){
+    toSVGEle(k: number, config: RenderConfig){
+        this.curve.translate(config.origin)
         // const [p0, p1, p2, p3] = this.curve.points.map(p => p.toString())
         return (
             <React.Fragment>
-            <path key={k} d={this.toSVGString(thickness)}
+            <path key={k} d={this.toSVGString(config.unitWidth)}
                 className="segment-base"
             />
             {/* <path key={k + 10} d={`M${p0} C${p1} ${p2} ${p3}`} style={{fill: "none", strokeWidth: "0.005px", stroke: "red"}}/> */}
@@ -120,10 +126,10 @@ export class CharacterObj {
         this.segments = character.segments.map(s => new SegmentObj(s))
     }
 
-    toSVGEle(thickness: number){
+    toSVGEle(config: RenderConfig){
         return(
             <React.Fragment>
-                {this.segments.map((s, i) => s.toSVGEle(i, thickness))}
+                {this.segments.map((s, i) => s.toSVGEle(i, config))}
                 {/* {this.segments[1].toSVGEle(0, thickness)} */}
             </React.Fragment>
         )

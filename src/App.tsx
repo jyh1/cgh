@@ -4,6 +4,7 @@ import './App.css';
 import * as F from './character/fonts'
 import * as C from './character/classes'
 import {drawSegment} from './canvas/draw'
+import { Vec } from './math/vector';
 
 class App extends React.Component<{}, {curr: number}>{
 
@@ -22,15 +23,28 @@ class App extends React.Component<{}, {curr: number}>{
     // }
   }
   render(){
-    const c = Object.keys(F.defaultFont)[this.state.curr]
-    const char = new C.CharacterObj(F.defaultFont["w"])
-    console.log(c, this.state.curr)
+    const cs = []
+    const dv = new Vec(0, 0)
+    const l = Object.keys(F.defaultFont).length
+    for (let i = 0; i < l / 10 + 1; i ++){
+      dv.x = 0
+      for (let j = 0; j < 10; j ++){
+        if (i * 10 + j >= l){
+          break
+        }
+        const c = Object.keys(F.defaultFont)[i*10+j]
+        cs.push((<React.Fragment key={i*10+j}>{new C.CharacterObj(F.defaultFont[c]).toSVGEle({unitWidth: 1, origin: dv})}</React.Fragment>))
+        dv.x += 4
+      }
+      dv.y += 4
+    }
+    // const char = new C.CharacterObj(F.defaultFont[c])
     return (
       <div className="App">
         <div className="App">
           {/* <canvas ref="canvas" width={640} height={425} /> */}
-          <svg viewBox="-5 -5 10 10" width={"100%"} height={"100%"} onClick={() => this.setState(s => ({curr: s.curr+1}))}>
-            {char.toSVGEle(1)}
+          <svg viewBox="-2 -2 50 50" width={"100%"} height={"100%"} onClick={() => this.setState(s => ({curr: s.curr+1}))}>
+            {cs}
           </svg>
         </div>
       </div>
