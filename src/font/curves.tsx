@@ -31,8 +31,8 @@ export class Bezier {
     }
 
     // fit for Bezier curve with the same slope at two ends, and distance from the original curve determined by thickness
-    solve(thickness: (t: number) => number){
-        const newcurve = (t: number) => (this.getPoint(t).add(this.getDeriv(t).rotate().normalized().scale(0.5 * thickness(t))))
+    solve(thickness: (t: number) => number, strand = 1){
+        const newcurve = (t: number) => (this.getPoint(t).add(this.getDeriv(t).rotate().normalized().scale(0.5 * strand * thickness(t))))
         const q1 = this.points[1].sub(this.points[0])
         const q2 = this.points[2].sub(this.points[3])
         const i0 = newcurve(0)
@@ -83,16 +83,11 @@ export class Bezier {
 
 
 export class SegmentObj {
-    segment: T.Segment
     curve: Bezier
-    constructor(segment: T.Segment){
-        this.segment = segment
-        this.curve = new Bezier(segment.curve.map(v => new Vec(v.x, v.y)) as T.Quadruple<Vec>)
-    }
-
-    // width at this segment
-    getWidth(t: number){
-        return (this.segment.initWidth*(1-t) + this.segment.closingWidth*t)
+    width: (t: number) => number
+    constructor(points: T.Quadruple<T.Point>, initWidth: number, closingWidth: number){
+        this.curve = new Bezier(points.map(v => new Vec(v.x, v.y)) as T.Quadruple<Vec>)
+        this.width = (t: number) => (initWidth*(1-t) + closingWidth*t)
     }
 
     translate(v: Vec){
@@ -100,12 +95,11 @@ export class SegmentObj {
     }
 
     toSVGString(thickScale: number){
-        const {initWidth, closingWidth} = this.segment
 
         // outer strand
-        const outerStrand = this.curve.solve(t => thickScale*(initWidth * (1- t) + closingWidth * t))
+        const outerStrand = this.curve.solve(t => this.width(t) * thickScale)
         // inner strand
-        const innerStrand = this.curve.solve(t => thickScale*(-initWidth * (1- t) - closingWidth * t))
+        const innerStrand = this.curve.solve(t => this.width(t) * thickScale, -1)
 
         const [o0p, o1p, o2p, o3p] = outerStrand.points.map(p => p.toString())
         const [i0p, i1p, i2p, i3p] = innerStrand.points.map(p => p.toString())
@@ -115,10 +109,11 @@ export class SegmentObj {
         return path
     }
     toSVGEle(unitWidth: number){
-        // const [p0, p1, p2, p3] = this.curve.points.map(p => p.toString())
+        const [p0, p1, p2, p3] = this.curve.points.map(p => p.toString())
         return (
-                [<path d={this.toSVGString(unitWidth)}className="segment-base"/>]
-            /* <path key={k + 10} d={`M${p0} C${p1} ${p2} ${p3}`} style={{fill: "none", strokeWidth: "0.005px", stroke: "red"}}/> */
+                [<path d={this.toSVGString(unitWidth)}className="segment-base"/>
+                // ,<path d={`M${p0} C${p1} ${p2} ${p3}`} style={{fill: "none", strokeWidth: "0.005px", stroke: "red"}}/>
+                ]
         )
     }
 }

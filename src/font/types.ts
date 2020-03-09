@@ -25,7 +25,7 @@ export interface FontDict {
   [character: string]: Character
 }
 
-export type CharType = "lower" | "upper" | "punctuation"
+export type CharType = "lower" | "upper" | "symbol"
 
 
 export type RenderConfig = {

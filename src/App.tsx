@@ -39,7 +39,8 @@ class App extends React.Component<{}, {curr: number}>{
     //   dv.y += 4
     // }
     // const char = new C.CharacterObj(F.defaultFont[c])
-    const txt = "An easy place to start is by drawing a shape. We will start with a rectangle (the same type that could be more easily made with a <rect> element). It's composed of horizontal and vertical lines only:"
+    const txt = "BENTO An easy place to start is by drawing a shape. We will start with a rectangle (the same type that could be more easily made with a <rect> element). It's composed of horizontal and vertical lines only:"
+    // const txt ='ae'
     const word = new ParagraphObj(txt,
       {origin: new Vec(0, 0)
         , unitWidth: 1
