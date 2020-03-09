@@ -1,3 +1,4 @@
+import { Vec } from '../math/vector';
 
 export type Point = {x: number, y: number}
 
@@ -15,14 +16,23 @@ export type Segment = {
     , isBreak: boolean // whether it is the end of a stroke and should be breaked from next segment
 }
 
-// export type CharacterType = "Upper" | "Lower" | "Punctuation"
-
 export type Character = {
       ascii: string
     , segments: Segment[]
-    // , characterType: CharacterType
 }
 
 export interface FontDict {
   [character: string]: Character
+}
+
+export type CharType = "lower" | "upper" | "punctuation"
+
+
+export type RenderConfig = {
+    origin: Vec
+  , unitWidth: number
+  , chrDist: number
+  , wordDist: number
+  , lineWidth: number
+  , lineHeight: number
 }

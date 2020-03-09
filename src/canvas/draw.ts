@@ -1,4 +1,4 @@
-import {SegmentObj} from '../character/classes'
+import {SegmentObj} from '../font/curves'
 
 export type DrawingOptions = {
       sampleRate: number
