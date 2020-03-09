@@ -87,7 +87,7 @@ export class Bezier {
 export class SegmentObj {
     curve: Bezier
     width: (t: number) => number
-    connected: boolean = false
+    connecting: boolean = false
     constructor(points: T.Quadruple<T.Point>, initWidth: number, closingWidth: number){
         this.curve = new Bezier(points.map(v => new Vec(v.x, v.y)) as T.Quadruple<Vec>)
         this.width = (t: number) => (initWidth*(1-t) + closingWidth*t)
@@ -97,12 +97,12 @@ export class SegmentObj {
         this.curve.translate(v)
     }
 
-    toSVGString(thickScale: number){
-
+    toSVGString(thickScale: number, faintedProb: number){
+        const fainted = this.connecting? (Math.random() < faintedProb? true : false) : false
         // outer strand
-        const outerStrand = this.curve.solve(t => this.width(t) * thickScale, this.connected)
+        const outerStrand = this.curve.solve(t => this.width(t) * thickScale, fainted)
         // inner strand
-        const innerStrand = this.curve.solve(t => - this.width(t) * thickScale, this.connected)
+        const innerStrand = this.curve.solve(t => - this.width(t) * thickScale, fainted)
 
         const [o0p, o1p, o2p, o3p] = outerStrand.points.map(p => p.toString())
         const [i0p, i1p, i2p, i3p] = innerStrand.points.map(p => p.toString())
@@ -111,10 +111,10 @@ export class SegmentObj {
             `M${o0p} C${o1p} ${o2p} ${o3p} L${i3p} C${i2p} ${i1p} ${i0p} Z`
         return path
     }
-    toSVGEle(unitWidth: number){
+    toSVGEle(unitWidth: number, faintedProb: number){
         const [p0, p1, p2, p3] = this.curve.points.map(p => p.toString())
         return (
-                [<path d={this.toSVGString(unitWidth)}className="segment-base"/>
+                [<path d={this.toSVGString(unitWidth, faintedProb)}className="segment-base"/>
                 // ,<path d={`M${p0} C${p1} ${p2} ${p3}`} style={{fill: "none", strokeWidth: "0.005px", stroke: "red"}}/>
                 ]
         )
@@ -149,7 +149,7 @@ export class SegmentObjArray{
         )
         return [new Vec(minX, minY), new Vec(maxX, maxY)]
     }
-    toSVGEle(unitWidth: number){
-        return [...this.segments.map(s => s.toSVGEle(unitWidth))]
+    toSVGEle(unitWidth: number, faintedProb: number){
+        return [...this.segments.map(s => s.toSVGEle(unitWidth, faintedProb))]
     }
 }

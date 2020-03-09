@@ -37,4 +37,7 @@ export type RenderConfig = {
   , lineHeight: number
   , pnctDist: number
   , slackness: number
+  , connectProb: number
+  , faintedProb: number
+  , fontSize: number
 }

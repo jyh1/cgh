@@ -12,12 +12,12 @@ export class CharacterObj {
     unitWidth: number
     startingSeg: SegmentObj
     endingSeg: SegmentObj
-    // startingSeg: SegmentObj // possibly connected to the previous character
-    // endingSeg: SegmentObj // possibly connected to the next character
-    constructor(character: T.Character, unitWidth: number){
+    faintedProb: number
+    constructor(character: T.Character, config: T.RenderConfig){
         this.strokes = new SegmentObjArray (character.segments.map(s => new SegmentObj(s.curve, s.initWidth, s.closingWidth)))
         this.ascii = character.ascii
-        this.unitWidth = unitWidth
+        this.unitWidth = config.unitWidth
+        this.faintedProb = config.faintedProb
         const segs = this.strokes.segments
         if (character.segments.length > 0){
             this.startingSeg = segs[0]
@@ -32,12 +32,14 @@ export class CharacterObj {
             throw new AssertionError
         }
 
+        this.strokes.mapPoints(v => v.scale(config.fontSize))
+
     }
 
     toSVGEle(key: number){
         return(
             <React.Fragment key={key}>
-                {this.strokes.toSVGEle(this.unitWidth).map((e, i) => (<React.Fragment key={i}>{e}</React.Fragment>))}
+                {this.strokes.toSVGEle(this.unitWidth, this.faintedProb).map((e, i) => (<React.Fragment key={i}>{e}</React.Fragment>))}
             </React.Fragment>
         )
     }
@@ -69,7 +71,7 @@ export class CharacterObj {
         const eW = s2.width(1)
         s1.curve = newcurve
         s1.width = connectedWidth(iW, eW)
-        s1.connected = true
+        s1.connecting = true
         next.removeFirst()
     }
 }
@@ -83,13 +85,14 @@ function connectedWidth(st: number, en: number){
 export class WordObj {
     characters: CharacterObj[]
     width: number
-    constructor(cs: string, unitWidth: number, chrDist: number, pnctDist: number, slackness: number){
+    constructor(cs: string, config: T.RenderConfig){
         let offset = new Vec(0, 0)
+        const {chrDist, pnctDist, slackness} = config
         this.characters = []
         for(let i = 0; i < cs.length; i+=1){
             const c = cs.charAt(i)
             if (c in F.defaultFont){
-                const chr = new CharacterObj(F.defaultFont[c], unitWidth)
+                const chr = new CharacterObj(F.defaultFont[c], config)
                 chr.strokes.mapPoints(v => new Vec(v.x - v.y * slackness, v.y))
                 const [min, max] = chr.strokes.getBoundingBox()
                 offset.x -= min.x
@@ -134,7 +137,7 @@ export class ParagraphObj {
     constructor(txt: string, config: T.RenderConfig){
         let offset = new Vec(config.origin.x, config.origin.y)
         this.words = txt.split(" ").map( w => {
-            const word = new WordObj(w, config.unitWidth, config.chrDist, config.pnctDist, config.slackness)
+            const word = new WordObj(w, config)
             if (word.width + offset.x > config.lineWidth){
                 offset.x = config.origin.x
                 offset.y += config.lineHeight

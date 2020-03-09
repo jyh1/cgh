@@ -6,6 +6,20 @@ import * as C from './font/curves'
 import { Vec } from './math/vector'
 import {ParagraphObj} from './font/words'
 
+const defaultConfig =
+  {origin: new Vec(0, 0)
+    , unitWidth: 1
+    , chrDist: 0
+    , wordDist: 0.6
+    , lineWidth: 40
+    , lineHeight: 2
+    , pnctDist: 0.2
+    , slackness: 0.3
+    , connectProb: 0.5
+    , faintedProb: 0.5
+    , fontSize: 0.5
+  }
+
 class App extends React.Component<{}, {curr: number}>{
 
   constructor(props: {}){
@@ -41,16 +55,7 @@ class App extends React.Component<{}, {curr: number}>{
     // const char = new C.CharacterObj(F.defaultFont[c])
     const txt = "BENTO An easy place to start is by drawing a shape. We will start with a rectangle (the same type that could be more easily made with a <rect> element). It's composed of horizontal and vertical lines only:"
     // const txt ='ae'
-    const word = new ParagraphObj(txt,
-      {origin: new Vec(0, 0)
-        , unitWidth: 1
-        , chrDist: 0
-        , wordDist: 0.8
-        , lineWidth: 40
-        , lineHeight: 4
-        , pnctDist: 0.2
-        , slackness: 0.3
-      })
+    const word = new ParagraphObj(txt, defaultConfig)
     return (
       <div className="App">
         <div className="App">
