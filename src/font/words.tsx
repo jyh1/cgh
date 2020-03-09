@@ -69,15 +69,15 @@ export class CharacterObj {
         const eW = s2.width(1)
         s1.curve = newcurve
         s1.width = connectedWidth(iW, eW)
+        s1.connected = true
         next.removeFirst()
     }
 }
 
 function connectedWidth(st: number, en: number){
-    const mid = (st > en? en : st) * 0.4
+    const mid = (st > en? en : st) * 0.1
     const tmid = 0.6
-    const ft = Math.sqrt
-    return (t: number) => (t < tmid? st + ft(t/tmid) * (mid-st) : mid + ft((t-tmid)/(1-tmid)) * (en-mid))
+    return (t: number) => (t < tmid? st + (t/tmid) * (mid-st) : mid + ((t-tmid)/(1-tmid)) * (en-mid))
 }
 
 export class WordObj {
