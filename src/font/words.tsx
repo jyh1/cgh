@@ -55,17 +55,22 @@ export class CharacterObj {
 export class WordObj {
     characters: CharacterObj[]
     width: number
-    constructor(cs: string, unitWidth: number, chrDist: number){
+    constructor(cs: string, unitWidth: number, chrDist: number, pnctDist: number, slackness: number){
         let offset = new Vec(0, 0)
         this.characters = []
         for(let i = 0; i < cs.length; i+=1){
             const c = cs.charAt(i)
             if (c in F.defaultFont){
                 const chr = new CharacterObj(F.defaultFont[c], unitWidth)
+                chr.strokes.mapPoints(v => new Vec(v.x - v.y * slackness, v.y))
                 const [min, max] = chr.strokes.getBoundingBox()
                 offset.x -= min.x
+                const chrType = chr.getType()
+                if (chrType == "punctuation"){
+                    offset.x += pnctDist
+                }
                 chr.strokes.mapPoints(v => v.add(offset))
-                offset.x = offset.x + max.x + chrDist
+                offset.x = offset.x + max.x + chrDist + (chrType == "punctuation"? pnctDist : 0)
                 this.characters.push(chr)
             } else {
                 console.log("Not found character: ", c)
@@ -91,7 +96,7 @@ export class ParagraphObj {
     constructor(txt: string, config: T.RenderConfig){
         let offset = new Vec(config.origin.x, config.origin.y)
         this.words = txt.split(" ").map( w => {
-            const word = new WordObj(w, config.unitWidth, config.chrDist)
+            const word = new WordObj(w, config.unitWidth, config.chrDist, config.pnctDist, config.slackness)
             if (word.width + offset.x > config.lineWidth){
                 offset.x = config.origin.x
                 offset.y += config.lineHeight

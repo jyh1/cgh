@@ -35,4 +35,6 @@ export type RenderConfig = {
   , wordDist: number
   , lineWidth: number
   , lineHeight: number
+  , pnctDist: number
+  , slackness: number
 }
