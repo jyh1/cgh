@@ -3,6 +3,7 @@ import * as F from './fonts'
 import * as T from './types'
 import {SegmentObj, SegmentObjArray, Bezier} from './curves'
 import { Vec } from '../math/vector';
+import {norm} from '../math/random'
 
 import { AssertionError } from 'assert';
 
@@ -80,7 +81,7 @@ export class CharacterObj {
         const segments = this.strokes.segments
         const perturbPoint = (p: Vec) => {
                 const diff = p.sub(center)
-                return diff.scale(scale * (Math.random() * 2 - 1))
+                return diff.scale(scale * norm())
             }
         segments[0].curve.moveP0(perturbPoint(segments[0].curve.points[0]))
         for(let i = 0; i < segments.length; i += 1){
@@ -154,13 +155,15 @@ export class ParagraphObj {
 
     constructor(txt: string, config: T.RenderConfig){
         let offset = new Vec(config.origin.x, config.origin.y)
+        let yrand = 0
         this.words = txt.split(" ").map( w => {
             const word = new WordObj(w, config)
             if (word.width + offset.x > config.lineWidth){
                 offset.x = config.origin.x
                 offset.y += config.lineHeight
             }
-            word.translate(offset)
+            yrand = yrand * 0.8 + norm() * config.yRandom
+            word.translate(offset.add(new Vec(0, yrand)))
             offset.x += word.width + config.wordDist
             return word
         })

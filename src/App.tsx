@@ -18,7 +18,8 @@ const defaultConfig =
     , connectProb: 0.5
     , faintedProb: 0.3
     , fontSize: 0.5
-    , letterRandom: 0.03
+    , letterRandom: 0.015
+    , yRandom: 0.05
   }
 
 class App extends React.Component<{}, {curr: number}>{
