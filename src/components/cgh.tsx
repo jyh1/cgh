@@ -12,7 +12,6 @@ export class CGH extends React.Component<Prop, {}>{
 
     render(){
         const paragraph = new ParagraphObj(this.props.text, this.props.config)
-        const {lineHeight, lineWidth, fontSize} = this.props.config
         return (
             <svg viewBox="-2 -2 50 50" width={"100%"} height={"100%"}>
                 {paragraph.toSVGEle()}

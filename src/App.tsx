@@ -14,7 +14,7 @@ const defaultConfig =
     , lineWidth: 40
     , lineHeight: 2
     , pnctDist: 0.2
-    , slackness: 0.2
+    , slackness: 0.3
     , connectProb: 0.5
     , faintedProb: 0.3
     , fontSize: 0.5

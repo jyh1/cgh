@@ -112,8 +112,8 @@ export class WordObj {
             if (c in F.defaultFont){
                 const chr = new CharacterObj(F.defaultFont[c], config)
                 chr.perturb(config.letterRandom)
-                chr.strokes.mapPoints(v => new Vec(v.x - v.y * slackness, v.y))
                 const [min, max] = chr.strokes.getBoundingBox()
+                chr.strokes.mapPoints(v => new Vec(v.x - v.y * slackness, v.y))
                 offset.x -= min.x
                 const chrType = chr.getType()
                 if (chrType === "symbol"){
