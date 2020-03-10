@@ -148,7 +148,7 @@ export class SegmentObjArray{
         let minY = Number.MAX_VALUE
         this.segments.forEach(
             s => {
-                for (let t = 0; t <= 1.01; t += dt){
+                for (let t = 0; t < 1.01; t += dt){
                     const p = s.curve.getPoint(t)
                     if (p.x > maxX) maxX = p.x
                     if (p.y > maxY) maxY = p.y

@@ -152,14 +152,13 @@ export class WordObj {
 
 export class ParagraphObj {
     words: WordObj[]
-
     constructor(txt: string, config: T.RenderConfig){
-        let offset = new Vec(config.origin.x, config.origin.y)
+        let offset = new Vec(config.originX, config.originY)
         let yrand = 0
         this.words = txt.split(" ").map( w => {
             const word = new WordObj(w, config)
             if (word.width + offset.x > config.lineWidth){
-                offset.x = config.origin.x
+                offset.x = config.originX
                 offset.y += config.lineHeight
             }
             yrand = yrand * 0.8 + norm() * config.yRandom

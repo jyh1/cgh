@@ -1,41 +1,53 @@
 import React from 'react';
 import './App.css';
-import { Vec } from './math/vector'
-import {ParagraphObj} from './font/words'
+import "semantic-ui-css/semantic.min.css"
+import * as T from './font/types'
+import {CGH} from './components/cgh'
+import {Input} from './components/input'
 
 const defaultConfig =
-  {origin: new Vec(0, 0)
+  {originX: 0
+    , originY: 0
     , unitWidth: 0.7
     , chrDist: 0
     , wordDist: 0.6
     , lineWidth: 40
     , lineHeight: 2
     , pnctDist: 0.2
-    , slackness: 0.3
+    , slackness: 0.2
     , connectProb: 0.5
     , faintedProb: 0.3
     , fontSize: 0.5
-    , letterRandom: 0.015
-    , yRandom: 0.05
+    , letterRandom: 0.02
+    , yRandom: 0.03
   }
 
-class App extends React.Component<{}, {curr: number}>{
+class App extends React.Component<{}, {config: T.RenderConfig, text: string}>{
 
   constructor(props: {}){
     super(props)
-    this.state={curr: 30}
+    this.state = {config: defaultConfig, text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."}
+  }
+
+  setText(txt: string){
+    this.setState(s => ({...s, text: txt}))
+  }
+
+  setConfig(k: keyof T.RenderConfig, val: number){
+    this.setState(s => {let newsconfig={...s.config}; newsconfig[k]=val; return {...s, config: newsconfig}})
   }
 
   render(){
-    const txt = "EEEEE BENTO An easy place to start is by drawing a shape. We will start with a rectangle (the same type that could be more easily made with a <rect> element). It's composed of horizontal and vertical lines only:"
-    const word = new ParagraphObj(txt, defaultConfig)
+    const {config, text} = this.state
     return (
       <div className="App">
-        <div className="App">
-          <svg viewBox="-2 -2 50 50" width={"100%"} height={"100%"} onClick={() => this.setState(s => ({curr: s.curr+1}))}>
-            {word.toSVGEle()}
-          </svg>
-        </div>
+          <div className="Config">
+            <Input text={text} setText={this.setText.bind(this)} config={config} setConfig={this.setConfig.bind(this)} />
+          </div>
+          <div className= "Display">
+            <CGH config={config} text={text} />
+          </div>
+
       </div>
     );
   }

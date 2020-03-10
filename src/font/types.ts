@@ -29,7 +29,8 @@ export type CharType = "lower" | "upper" | "symbol"
 
 
 export type RenderConfig = {
-    origin: Vec
+    originX: number
+  , originY: number
   , unitWidth: number
   , chrDist: number
   , wordDist: number
