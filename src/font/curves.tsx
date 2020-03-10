@@ -122,7 +122,7 @@ export class SegmentObj {
         return path
     }
     toSVGEle(unitWidth: number, faintedProb: number){
-        const [p0, p1, p2, p3] = this.curve.points.map(p => p.toString())
+        // const [p0, p1, p2, p3] = this.curve.points.map(p => p.toString())
         return (
                 [<path d={this.toSVGString(unitWidth, faintedProb)}className="segment-base"/>
                 // ,<path d={`M${p0} C${p1} ${p2} ${p3}`} style={{fill: "none", strokeWidth: "0.005px", stroke: "red"}}/>

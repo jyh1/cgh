@@ -25,12 +25,12 @@ export class CharacterObj {
             let i
             // find the first breaking point
             for (i = 0;; i += 1){
-                if ((i == segs.length-1) || (character.segments[i].isBreak)) break
+                if ((i === segs.length-1) || (character.segments[i].isBreak)) break
             }
             this.endingSeg = segs[i]
         }
         else {
-            throw new AssertionError
+            throw new AssertionError()
         }
 
         this.strokes.mapPoints(v => v.scale(config.fontSize))
@@ -116,11 +116,11 @@ export class WordObj {
                 const [min, max] = chr.strokes.getBoundingBox()
                 offset.x -= min.x
                 const chrType = chr.getType()
-                if (chrType == "symbol"){
+                if (chrType === "symbol"){
                     offset.x += pnctDist
                 }
                 chr.strokes.mapPoints(v => v.add(offset))
-                offset.x = offset.x + max.x + chrDist + (chrType == "symbol"? pnctDist : 0)
+                offset.x = offset.x + max.x + chrDist + (chrType === "symbol"? pnctDist : 0)
                 this.characters.push(chr)
             } else {
                 console.log("Not found character: ", c)
@@ -133,7 +133,7 @@ export class WordObj {
         for(let i = 0; i < this.characters.length - 1; i += 1){
             const curr = this.characters[i]
             const next = this.characters[i + 1]
-            if ((curr.getType() == "lower") && (next.getType() == "lower")){
+            if ((curr.getType() === "lower") && (next.getType() === "lower")){
                 curr.merge(next)
             }
         }
@@ -171,7 +171,7 @@ export class ParagraphObj {
 
     toSVGEle(){
         return (
-            <React.Fragment>
+            <React.Fragment key={1}>
                 {this.words.map((w, i) => w.toSVGEle(i))}
             </React.Fragment>
         )
