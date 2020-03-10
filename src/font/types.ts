@@ -40,4 +40,5 @@ export type RenderConfig = {
   , connectProb: number
   , faintedProb: number
   , fontSize: number
+  , letterRandom: number
 }

@@ -74,6 +74,23 @@ export class CharacterObj {
         s1.connecting = true
         next.removeFirst()
     }
+
+    perturb(scale: number){
+        const center = this.strokes.estimateCenter()
+        const segments = this.strokes.segments
+        const perturbPoint = (p: Vec) => {
+                const diff = p.sub(center)
+                return diff.scale(scale * (Math.random() * 2 - 1))
+            }
+        segments[0].curve.moveP0(perturbPoint(segments[0].curve.points[0]))
+        for(let i = 0; i < segments.length; i += 1){
+            const dv = perturbPoint(segments[0].curve.points[3])
+            segments[i].curve.moveP3(dv)
+            if (i + 1 < segments.length){
+                segments[i+1].curve.moveP0(dv)
+            }
+        }
+    }
 }
 
 function connectedWidth(st: number, en: number){
@@ -93,6 +110,7 @@ export class WordObj {
             const c = cs.charAt(i)
             if (c in F.defaultFont){
                 const chr = new CharacterObj(F.defaultFont[c], config)
+                chr.perturb(config.letterRandom)
                 chr.strokes.mapPoints(v => new Vec(v.x - v.y * slackness, v.y))
                 const [min, max] = chr.strokes.getBoundingBox()
                 offset.x -= min.x

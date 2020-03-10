@@ -8,7 +8,7 @@ import {ParagraphObj} from './font/words'
 
 const defaultConfig =
   {origin: new Vec(0, 0)
-    , unitWidth: 1
+    , unitWidth: 0.5
     , chrDist: 0
     , wordDist: 0.6
     , lineWidth: 40
@@ -16,8 +16,9 @@ const defaultConfig =
     , pnctDist: 0.2
     , slackness: 0.3
     , connectProb: 0.5
-    , faintedProb: 0.5
+    , faintedProb: 0.3
     , fontSize: 0.5
+    , letterRandom: 0.03
   }
 
 class App extends React.Component<{}, {curr: number}>{
@@ -53,7 +54,7 @@ class App extends React.Component<{}, {curr: number}>{
     //   dv.y += 4
     // }
     // const char = new C.CharacterObj(F.defaultFont[c])
-    const txt = "BENTO An easy place to start is by drawing a shape. We will start with a rectangle (the same type that could be more easily made with a <rect> element). It's composed of horizontal and vertical lines only:"
+    const txt = "EEEEE BENTO An easy place to start is by drawing a shape. We will start with a rectangle (the same type that could be more easily made with a <rect> element). It's composed of horizontal and vertical lines only:"
     // const txt ='ae'
     const word = new ParagraphObj(txt, defaultConfig)
     return (

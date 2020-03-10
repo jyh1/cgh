@@ -26,6 +26,16 @@ export class Bezier {
         this.mapPoints(p => p.add(dv))
     }
 
+    moveP0(dv: Vec){
+        this.points[0] = this.points[0].add(dv)
+        this.points[1] = this.points[1].add(dv)
+    }
+
+    moveP3(dv: Vec){
+        this.points[2] = this.points[2].add(dv)
+        this.points[3] = this.points[3].add(dv)
+    }
+
     mapPoints(f: (v: Vec) => Vec){
         this.points = this.points.map(p => f(p)) as T.Quadruple<Vec>
     }
@@ -148,6 +158,16 @@ export class SegmentObjArray{
             }
         )
         return [new Vec(minX, minY), new Vec(maxX, maxY)]
+    }
+    estimateCenter(){
+        let center = new Vec(0, 0)
+        this.segments.forEach(
+            s => {
+                center.add(s.curve.points[0])
+                center.add(s.curve.points[3])
+            }
+        )
+        return center.scale(1 / (this.segments.length * 2))
     }
     toSVGEle(unitWidth: number, faintedProb: number){
         return [...this.segments.map(s => s.toSVGEle(unitWidth, faintedProb))]
