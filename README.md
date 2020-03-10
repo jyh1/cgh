@@ -1,44 +1,25 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Generate Handwriting Documents
 
-## Available Scripts
+![image](img/example.png)
 
-In the project directory, you can run:
+This repository contains an application for generating realistic handwriting documents.
 
-### `npm start`
+## Not Just a Cursive Font
+It is not just another cursive font. The goal is to generate documents with a more authenticate feeling. Each character will be rendered differently in the following ways:
+1. Adjacent strokes of two characters will be bent and joined up if possible.
+2. Random perturbation to make the same character look slightly different each time.
+3. Continuous increase of thickness and slackness of the characters.
+4. Random perturbation to make letters not always perfectly aligned.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Implementation
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+### Font Format
+The strokes of each character are described by a series of cubic Bezier curves, so they can be easily manipulated by changing their control points.
 
-### `npm test`
+![](img/outline.png)
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Each Bezier curve is called _segment_ and is the smallest unit during font rendering. A single stroke may be divided into  segments for a more accurate representation of its shape.
 
-### `npm run build`
+However, this representation lost the variation of stroke thickness, resulting in a very boring font style. When generating the font file, the starting and ending thickness of each segment is also recorded. During rendering, the thickness of each point in a segment is linearly interpolated from its two ends.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+![](img/countour.png)
