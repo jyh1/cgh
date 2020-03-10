@@ -16,7 +16,7 @@ const defaultConfig =
     , pnctDist: 0.2
     , slackness: 0.3
     , connectProb: 0.5
-    , faintedProb: 0.3
+    , faintedProb: 0.4
     , fontSize: 0.5
     , letterRandom: 0.02
     , yRandom: 0.03

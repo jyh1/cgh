@@ -8,11 +8,11 @@ const names: {[k: string]: string} = {
     // , wordDist: "Word Dist"
     // , lineWidth: "Line Width"
     // , lineHeight: "Line Height"
-    , slackness: "Slcakness"
-    , connectProb: "Connecting"
+    , slackness: "Slackness"
+    , connectProb: "Ligature Prob"
     , fontSize: "Font Size"
-    , letterRandom: "Pertubation"
-    , yRandom: "Aligning"
+    , letterRandom: "Perturbation"
+    , yRandom: "Y-Drift"
 }
 
 
